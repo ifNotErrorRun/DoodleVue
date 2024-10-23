@@ -1,4 +1,4 @@
-<script>
+<!--<script>-->
 // export default {
 //   data() {
 //     return {
@@ -70,89 +70,78 @@
 //     }
 //   }
 // }
+<script setup>
+import { ref } from 'vue'
 
-import { reactive } from 'vue'
+const state = ref({
+  output: null,
+  prev: null,
+  cur: null,
+  operator: null,
+})
 
-export default {
-  setup () {
-    const state = reactive({
-      output: null,
-      prev: null,
-      cur: null,
-      operator: null,
-    })
+const operatorActions = {
+  '+' : (a, b) => a + b,
+  '-' : (a, b) => a - b,
+  '*' : (a, b) => a * b,
+  '/' : (a, b) => a / b
+}
 
-    const operatorActions = {
-      '+' : (a, b) => a + b,
-      '-' : (a, b) => a - b,
-      '*' : (a, b) => a * b,
-      '/' : (a, b) => a / b
+const clear = () => {
+  state.value.output = null
+  state.value.prev = null
+  state.value.cur = null
+  state.value.operator = null
+}
+const calculate = (n) => {
+  if (!state.value.cur && !state.value.prev) {
+    alert('숫자를 먼저 입력하세요. ')
+    return
+  }
+  // 사칙연산 기호를 연달아 클릭한 경우
+  if (state.value.operator !== '' && !state.value.cur) {
+    alert('사칙연산 기호를 연달아 누를 수 없습니다. ')
+    return
+  }
+  // 등호를 클릭해 결과를 노출한 후 다시 등호를 클릭한 경우
+  if (n === '=' && state.value.prev === state.value.cur) {
+    return
+  }
+  state.value.cur = Number(state.value.cur)
+  if (state.value.operator) {
+    state.value.prev = operatorActions[state.value.operator](state.value.prev, state.value.cur)
+    if (n === '=') {
+      state.value.output = state.value.prev
+      state.value.operator = null
+      state.value.cur = state.value.prev
+    } else {
+      state.value.output = null
+      state.value.operator = n
+      state.value.cur = null
     }
-
-    const clear = () => {
-      state.output = null
-      state.prev = null
-      state.cur = null
-      state.operator = null
-    }
-    const calculate = (n) => {
-      if (!state.cur && !state.prev) {
-        alert('숫자를 먼저 입력하세요. ')
-        return
-      }
-      // 사칙연산 기호를 연달아 클릭한 경우
-      if (state.operator !== '' && !state.cur) {
-        alert('사칙연산 기호를 연달아 누를 수 없습니다. ')
-        return
-      }
-      // 등호를 클릭해 결과를 노출한 후 다시 등호를 클릭한 경우
-      if (n === '=' && state.prev === state.cur) {
-        return
-      }
-      state.cur = Number(state.cur)
-      if (state.operator) {
-        state.prev = operatorActions[state.operator](state.prev, state.cur)
-        if (n === '=') {
-          state.output = state.prev
-          state.operator = null
-          state.cur = state.prev
-        } else {
-          state.output = null
-          state.operator = n
-          state.cur = null
-        }
-      } else {
-        state.output = null
-        state.operator = n
-        state.prev = state.cur
-        state.cur = null
-      }
-    }
-
-    const userInput= (n) => {
-      state.cur = state.cur ? (state.cur += n) : n
-      state.output = state.cur
-    }
-
-    const operation = (e) => {
-      const n = e.currentTarget.value
-      if (n === 'C') {
-        clear()
-      } else if (['+', '-', '/', '*', '='].includes(n)) {
-        calculate(n)
-      } else {
-        userInput(n)
-      }
-    }
-
-    return {
-      state,
-      operation,
-    }
+  } else {
+    state.value.output = null
+    state.value.operator = n
+    state.value.prev = state.value.cur
+    state.value.cur = null
   }
 }
 
+const userInput= (n) => {
+  state.value.cur = state.value.cur ? (state.value.cur += n) : n
+  state.value.output = state.value.cur
+}
 
+const operation = (e) => {
+  const n = e.currentTarget.value
+  if (n === 'C') {
+    clear()
+  } else if (['+', '-', '/', '*', '='].includes(n)) {
+    calculate(n)
+  } else {
+    userInput(n)
+  }
+}
 </script>
 
 <template>
