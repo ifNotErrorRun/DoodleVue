@@ -1,5 +1,10 @@
-<script setup></script>
+<script setup>
+  import TestView from '@/components/TestView.vue'
+</script>
 
-<template></template>
+<template>
+  <div>Home</div>
+  <TestView />
+</template>
 
 <style scoped></style>
