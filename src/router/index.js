@@ -7,6 +7,16 @@ const routes = [
     name: 'home',
     component: HomeView,
   },
+  {
+    path: '/forecast',
+    name: 'forecast',
+    component: () => import('@/views/ForecastView.vue'),
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('@/views/SearchView.vue'),
+  },
 ]
 
 const router = createRouter({
